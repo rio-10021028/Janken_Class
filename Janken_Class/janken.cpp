@@ -42,7 +42,7 @@ class JankenPlayer
 {
 public:
 	bool user;
-	int wins;
+	Result result;
 	RPSHands hand;
 
 	JankenPlayer(const char* pname);
@@ -82,7 +82,8 @@ JankenPlayer::JankenPlayer(const char* pname)
 	}
 
 	// 他項目初期化
-	wins = 0;
+	result.win = 0;
+	result.lose = 0;
 	hand = ROCK;
 }
 
@@ -251,14 +252,16 @@ void jankenSimurator()
 		switch (currentResult)
 		{
 		case LOSE:
-			p2.wins++;
+			p2.result.win++;
+			p1.result.lose++;
 			break;
 		case WIN:
-			p1.wins++;
+			p1.result.win++;
+			p2.result.lose++;
 		}
 
 		// n本終わったらループ脱出
-		if (p1.wins == num || p2.wins == num)
+		if (p1.result.win == num || p2.result.win == num)
 		{
 			break;
 		}
@@ -266,8 +269,8 @@ void jankenSimurator()
 		// 暫定結果表示
 		cout << RPSResultsMessage[currentResult] << endl
 			<< "----- 暫定結果 ----- " << endl
-			<< "勝ち > " << p1.wins << endl
-			<< "負け > " << p2.wins << endl << endl;
+			<< "勝ち > " << p1.result.win << endl
+			<< "負け > " << p1.result.lose << endl << endl;
 
 		// round数加算
 		round++;
@@ -275,9 +278,9 @@ void jankenSimurator()
 
 	// 最終結果表示
 	cout << "===== 最終結果 =====\n\n"
-		<< "勝ち > " << p1.wins << endl
-		<< "負け > " << p2.wins << endl
-		<< "player 1 の " << (p1.wins == num ? RPSResultsMessage[WIN] : RPSResultsMessage[LOSE])
+		<< "勝ち > " << p1.result.win << endl
+		<< "負け > " << p1.result.lose << endl
+		<< "player 1 の " << (p1.result.win == num ? RPSResultsMessage[WIN] : RPSResultsMessage[LOSE])
 		<< endl << endl;
 
 }
