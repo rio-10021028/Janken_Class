@@ -29,10 +29,10 @@ int main()
 			case YES:
 				inputFlag = false;
 				cout << "---------------------------\n";
-				break;
+				break;    // break でループだけを終了
 			case NO:
 				cout << "またね！" << endl;
-				return 0;
+				return 0; // return 0 で main 関数を終了
 			default:
 				cout << "0, 1 で入力してください\n\n";
 			}

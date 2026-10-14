@@ -38,6 +38,7 @@ struct Result
 	int win;
 };
 
+// class
 class JankenPlayer
 {
 public:
@@ -89,6 +90,7 @@ JankenPlayer::JankenPlayer(const char* pname)
 
 void JankenPlayer::jankenHandMaker()
 {
+	// それぞれの関数を呼び出し
 	if (user)
 	{
 		hand = userHandMaker();
@@ -120,11 +122,20 @@ static RPSHands userHandMaker()
 	}
 }
 
+static RPSHands cpuHandMaker()
+{
+	int hand = rand() % 3;
+
+	return (RPSHands)hand;
+}
+
+// いつもの
 static void initRand()
 {
 	srand((unsigned int)time(nullptr));
 }
 
+// 整数を入力させて返す関数
 int inputInt(const char* message)
 {
 	int num;
@@ -147,13 +158,7 @@ int inputInt(const char* message)
 	}
 }
 
-static RPSHands cpuHandMaker()
-{
-	int hand = rand() % 3;
-
-	return (RPSHands)hand;
-}
-
+//	手を受け取って結果を返す関数
 static RPSResults judgeResult(RPSHands user, RPSHands cpu)
 {
 	int result = ((user - cpu) + 2) % 3;
@@ -171,8 +176,14 @@ static RPSResults judgeResult(RPSHands user, RPSHands cpu)
 	}
 }
 
+// player を受け取ってじゃんけんを行う関数
 static RPSResults janken(JankenPlayer* pp1, JankenPlayer* pp2)
 {
+	// nullチェック
+	if (pp1 == nullptr || pp2 == nullptr)
+	{
+		return LOSE;
+	}
 
 	RPSResults currentResult = LOSE;
 
@@ -204,6 +215,7 @@ static RPSResults janken(JankenPlayer* pp1, JankenPlayer* pp2)
 	}
 }
 
+// じゃんけんを n 本先取で行い、結果を管理する関数
 void jankenSimurator()
 {
 	initRand();
@@ -212,7 +224,7 @@ void jankenSimurator()
 
 	cout << "じゃんけんゲームへようこそ！" << endl;
 
-	// n本か決まるまでループ
+	// num 本か決まるまでループ
 	num = 0;
 
 	while (true)
@@ -237,9 +249,10 @@ void jankenSimurator()
 
 	cout << num << " 本先取！　じゃんけんゲーム！\n\n";
 
+	// player 用意
 	JankenPlayer p1("player 1"), p2("player 2");
 
-	// n本終わるまでループ
+	// num 本終わるまでループ
 	while (true)
 	{
 		RPSResults currentResult = LOSE;
@@ -260,7 +273,7 @@ void jankenSimurator()
 			p2.result.lose++;
 		}
 
-		// n本終わったらループ脱出
+		// num 本終わったらループ脱出
 		if (p1.result.win == num || p2.result.win == num)
 		{
 			break;
@@ -272,7 +285,7 @@ void jankenSimurator()
 			<< "勝ち > " << p1.result.win << endl
 			<< "負け > " << p1.result.lose << endl << endl;
 
-		// round数加算
+		// round 数加算
 		round++;
 	}
 
