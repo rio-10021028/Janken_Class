@@ -22,10 +22,8 @@ int main()
 		// 繰り返すか確認
 		while (inputFlag)
 		{
-			cout << "yes > 0, no > 1" << endl
-				<< "もう一度？ > " << flush;
-			cin >> input;
-
+			cout << "yes > 0, no > 1" << endl;
+			input = inputInt("もう一度？ > ");
 			switch (input)
 			{
 			case YES:
