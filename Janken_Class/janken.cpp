@@ -41,13 +41,20 @@ struct Result
 // class
 class JankenPlayer
 {
-public:
+private:
+	const char* name;
 	bool user;
 	Result result;
 	RPSHands hand;
 
+public:
 	JankenPlayer(const char* pname);
-	void jankenHandMaker();
+	void userOrNot();
+	RPSHands getHand();
+	void setHand();
+	Result getResult();
+	void setResult(RPSResults index, int changeValue = 1);
+	const char* showName();
 };
 
 // プロトタイプ宣言群
@@ -60,35 +67,41 @@ JankenPlayer::JankenPlayer(const char* pname)
 	{
 		cout << "エラー！";
 	}
-	else
-	{
-		cout << pname;
-	}
 
-	// user かどうか
-	int num;
-
-	num = inputInt(" は cpu > 0, user > 1 ");
-
-	switch (num)
-	{
-	case 0:
-		user = false;
-		break;
-	case 1:
-		user = true;
-		break;
-	default:
-		user = false;
-	}
+	name = pname;
 
 	// 他項目初期化
+	user = false;
 	result.win = 0;
 	result.lose = 0;
 	hand = ROCK;
 }
 
-void JankenPlayer::jankenHandMaker()
+void JankenPlayer::userOrNot()
+{
+	// user かどうか
+	int num;
+
+	while (true)
+	{
+		cout << name << "は";
+		num = inputInt("cpu > 0, user > 1 ");
+
+		switch (num)
+		{
+		case 0:
+			user = false;
+			return;
+		case 1:
+			user = true;
+			return;
+		default:
+			cout << "0, 1 で入力してください" << endl;
+		}
+	}
+}
+
+void JankenPlayer::setHand()
 {
 	// それぞれの関数を呼び出し
 	if (user)
@@ -127,6 +140,34 @@ static RPSHands cpuHandMaker()
 	int hand = rand() % 3;
 
 	return (RPSHands)hand;
+}
+
+RPSHands JankenPlayer::getHand()
+{
+	return hand;
+}
+
+Result JankenPlayer::getResult()
+{
+	return result;
+}
+
+void JankenPlayer::setResult(RPSResults index, int changeValue)
+{
+	switch (index)
+	{
+	case LOSE:
+		result.lose += changeValue;
+		break;
+	case WIN:
+		result.win += changeValue;
+		break;
+	}
+}
+
+const char* JankenPlayer::showName()
+{
+	return name;
 }
 
 // いつもの
@@ -193,17 +234,17 @@ static RPSResults janken(JankenPlayer* pp1, JankenPlayer* pp2)
 		bool inputFlag = true;
 
 		// p1の手決定
-		pp1->jankenHandMaker();
+		pp1->setHand();
 
 		// cpuの手決定
-		pp2->jankenHandMaker();
+		pp2->setHand();
 
 		// 手を表示
-		cout << "player 1 > " << RPSHandMessage[pp1->hand] << endl
-			<< "player 2 > " << RPSHandMessage[pp2->hand] << endl << endl;
+		cout << "player 1 > " << RPSHandMessage[pp1->getHand()] << endl
+			<< "player 2 > " << RPSHandMessage[pp2->getHand()] << endl << endl;
 
 		// ジャッジ
-		currentResult = judgeResult(pp1->hand, pp2->hand);
+		currentResult = judgeResult(pp1->getHand(), pp2->getHand());
 
 		// あいこじゃなければ結果を返す
 		if (currentResult != TIE)
@@ -251,6 +292,8 @@ void jankenSimurator()
 
 	// player 用意
 	JankenPlayer p1("player 1"), p2("player 2");
+	p1.userOrNot();
+	p2.userOrNot();
 
 	// num 本終わるまでループ
 	while (true)
@@ -265,16 +308,16 @@ void jankenSimurator()
 		switch (currentResult)
 		{
 		case LOSE:
-			p2.result.win++;
-			p1.result.lose++;
+			p2.setResult(WIN);
+			p1.setResult(LOSE);
 			break;
 		case WIN:
-			p1.result.win++;
-			p2.result.lose++;
+			p1.setResult(WIN);
+			p2.setResult(LOSE);
 		}
 
 		// num 本終わったらループ脱出
-		if (p1.result.win == num || p2.result.win == num)
+		if (p1.getResult().win == num || p2.getResult().win == num)
 		{
 			break;
 		}
@@ -282,8 +325,8 @@ void jankenSimurator()
 		// 暫定結果表示
 		cout << RPSResultsMessage[currentResult] << endl
 			<< "----- 暫定結果 ----- " << endl
-			<< "勝ち > " << p1.result.win << endl
-			<< "負け > " << p1.result.lose << endl << endl;
+			<< "勝ち > " << p1.getResult().win << endl
+			<< "負け > " << p1.getResult().lose << endl << endl;
 
 		// round 数加算
 		round++;
@@ -291,9 +334,9 @@ void jankenSimurator()
 
 	// 最終結果表示
 	cout << "===== 最終結果 =====\n\n"
-		<< "勝ち > " << p1.result.win << endl
-		<< "負け > " << p1.result.lose << endl
-		<< "player 1 の " << (p1.result.win == num ? RPSResultsMessage[WIN] : RPSResultsMessage[LOSE])
+		<< "勝ち > " << p1.getResult().win << endl
+		<< "負け > " << p1.getResult().lose << endl
+		<< p1.showName() << " の " << (p1.getResult().win == num ? RPSResultsMessage[WIN] : RPSResultsMessage[LOSE])
 		<< endl << endl;
 
 }

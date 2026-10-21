@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="Janken_Class/Janken_Class.vcxproj" />
+  <Project Path="Janken_Class/Janken_Class.vcxproj" Id="55dd1bad-b583-4dc2-b11e-294e999b9846" />
 </Solution>
